@@ -34,4 +34,56 @@ app.get('/cipher', (request, response) => {
   response.status(200).json(output)
 });
 
-app.listen(8080, function() {console.info(`Server is listening on ${this.address().port}`);});
+function getRandomNumber() {
+  return Math.ceil(Math.random() * 20);
+}
+
+app.get('/lotto', (request, response) => {
+  const query = request.query;
+  console.log(query);
+
+  const winningNumbers = [];
+
+  query.arr.forEach( () => {
+    let newNumber = getRandomNumber();
+
+    while(winningNumbers.includes(newNumber)) {
+      newNumber = getRandomNumber();
+    }
+
+    winningNumbers.push(newNumber);
+  });
+
+  let numbersMatched = 0;
+
+  query.arr.map( num => {
+    if(winningNumbers.includes(Number(num))) {
+      numbersMatched++;
+    }
+  })
+
+  let output = '';
+
+  console.log(numbersMatched);
+
+  switch(numbersMatched) {
+    case 4:
+      output = 'Congratulations, you win a free ticket';
+      break;
+    case 5:
+      output = 'Congratulations! You win $100!';
+      break;
+    case 6:
+      output = 'Wow! Unbelievable! You could have won the mega millions!';
+      break;
+    default:
+      output = 'Sorry, you lose'
+  }
+  
+  response.status(200).json({output, numbersPlayed: query.arr, winningNumbers})
+
+});
+
+app.listen(8080, function() {
+  console.info(`Server is listening on ${this.address().port}`);
+});
