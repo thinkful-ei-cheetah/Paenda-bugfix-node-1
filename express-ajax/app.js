@@ -7,14 +7,14 @@ const app = express();
 
 app.use(morgan('dev'));
 
-app.get('url', (request, response) => {
+app.get('/sum', (request, response) => {
+  const query = request.query;
+  const a = Number(query.a);
+  const b = Number(query.b);
 
-let output = data
-const query = request.query;
-console.log(query)
+  const output = `The sum of a and b is ${a + b}`;
 
-
-response.status(200).json(output)
+  response.status(200).json(output)
 });
 
-app.listen(8080, function() {console.info(`Server is listening on ${this.address().port}`);};
+app.listen(8080, function() {console.info(`Server is listening on ${this.address().port}`);});
